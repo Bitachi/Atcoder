@@ -1,19 +1,59 @@
 #include<bits/stdc++.h>
 using namespace std;
+
+struct UnionFind {
+  vector<int> par; //親の番号
+  UnionFind(int n) : par(n, -1) { }
+  int find(int x){ //親の番号を求める
+    if(par[x] < 0) return x; //負なら親
+    return find(par[x]); //xの親を参照
+  }
+  bool unite(int x, int y){
+    int px = find(x); //xの親
+    int py = find(y); //yの親
+    if( px == py) return false; //すでに繋がっている
+    if(par[px] > par[py]) swap(px, py); //xの方が小さくしたい
+    par[px] += par[py];
+    par[py] = px;
+    return true;
+  }
+  bool same(int x, int y){
+    return find(x) == find(y);
+  }
+  int size(int x){
+    return -par[find(x)];
+  }
+};
+
 int main(){
   int N, X, Y;
   cin >> N >> X >> Y;
   int i, j;
-  vector<int> K(N, 0);
-  for(i=1; i<=N-1; i++){
-    for(j=i+1; j<=N; j++){
-      int r1 = j - i;
-      int r2 = abs(Y-j) + 1 + abs(i-X);
-      K[min(r1, r2)]++;
-    }
+  UnionFind tree(N);
+  vector<set<int> > dame(N);
+
+  rep(i, M){
+    int a, b;
+    cin >> a >> b;
+    a--;
+    b--;
+    dame[a].insert(b);
+    dame[b].insert(a);
+    tree.unite(a, b);
   }
-  for(i=1; i<N; i++){
-    cout << K[i]<< endl;
+  rep(i, K){
+    int c, d;
+    cin >> c >> d;
+    d--;
+    c--;
+    if(!tree.unite(c, d)) continue; //同じグループにあるもののみ
+    dame[c].insert(d);
+    dame[d].insert(c);
   }
-  return 0;
+  rep(i, N){
+    int num = tree.size(i) - 1;
+    num -= dame[i].size();
+    cout << num << " ";
+  }
+  cout << endl;
 }

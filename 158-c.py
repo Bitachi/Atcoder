@@ -1,10 +1,5 @@
-import math
-A, B = map(int, input().split())
-flag = False
-for x in range(1, 1000+100):
-    if A == math.floor(x*0.08) and B == math.floor(x*0.1):
-        print(x)
-        flag = True
-        break
-if not flag:
-    print(-1)
+#include<bits/stdc++.h>
+using namespace std;
+using ll = long long;
+#define rep(i, n) for (int i = 0; i < (int)(n); i++)
+typedef pair<int, int> P;
